@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, send_file
-from datetime import datetime
+from datetime import datetime, timedelta
+from werkzeug.middleware.proxy_fix import ProxyFix
 import csv
 import io
 import os
@@ -30,8 +31,17 @@ app.secret_key = secret_key
 app.config["SESSION_COOKIE_SECURE"] = os.environ.get("FLASK_ENV") == "production"
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(hours=12)
+
+# Required on Render so sessions/redirects work behind HTTPS proxy
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 
 init_db()
+
+
+@app.before_request
+def make_session_permanent():
+    session.permanent = True
 
 
 def mark_attendance_for_session():
@@ -41,6 +51,11 @@ def mark_attendance_for_session():
         session["student_roll"],
         session["student"],
     )
+
+
+@app.route("/health")
+def health():
+    return "OK", 200
 
 
 @app.route("/")
@@ -96,7 +111,7 @@ def teacher_login():
     return redirect(url_for("login"))
 
 
-@app.route("/student-dashboard")
+@app.route("/student-dashboard", strict_slashes=False)
 def student_dashboard():
     if "student" not in session:
         return redirect(url_for("login"))
@@ -111,7 +126,7 @@ def student_dashboard():
     )
 
 
-@app.route("/scan-page")
+@app.route("/scan-page", strict_slashes=False)
 def scan_page():
     if "student" not in session:
         return redirect(url_for("login"))
@@ -119,7 +134,7 @@ def scan_page():
     return render_template("scan.html")
 
 
-@app.route("/teacher-dashboard")
+@app.route("/teacher-dashboard", strict_slashes=False)
 def teacher_dashboard():
     if "teacher" not in session:
         return redirect(url_for("login"))

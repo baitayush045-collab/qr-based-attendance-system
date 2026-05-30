@@ -132,13 +132,13 @@ h1{
         </div>
     {% endif %}
 
-    <form action="/scan-page">
+    <form action="{{ url_for('scan_page') }}">
         <button type="submit" class="scan-btn">
             Scan QR Code
         </button>
     </form>
 
-    <a href="/logout" class="logout-link">Logout</a>
+    <a href="{{ url_for('logout') }}" class="logout-link">Logout</a>
 
 </div>
 

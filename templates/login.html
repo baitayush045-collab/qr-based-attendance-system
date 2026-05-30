@@ -303,7 +303,7 @@ h2{
                 Access your student dashboard
             </p>
 
-            <form action="/student_login" method="POST">
+            <form action="{{ url_for('student_login') }}" method="POST">
 
                 <div class="input-box">
                     <label>Student Email</label>
@@ -343,7 +343,7 @@ h2{
                 Access your teacher dashboard
             </p>
 
-            <form action="/teacher_login" method="POST">
+            <form action="{{ url_for('teacher_login') }}" method="POST">
 
                 <div class="input-box">
                     <label>Teacher Email</label>

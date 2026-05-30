@@ -4,7 +4,15 @@ from datetime import datetime, timedelta
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
-DATA_DIR = os.environ.get("DATA_DIR", os.path.dirname(os.path.abspath(__file__)))
+DATA_DIR = os.environ.get("DATA_DIR")
+if DATA_DIR:
+    try:
+        os.makedirs(DATA_DIR, exist_ok=True)
+    except OSError:
+        DATA_DIR = None
+if not DATA_DIR:
+    DATA_DIR = os.path.dirname(os.path.abspath(__file__))
+
 DB_PATH = os.path.join(DATA_DIR, "attendance.db")
 
 # Valid through a full 2-minute rush plus late arrivals

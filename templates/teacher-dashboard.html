@@ -209,7 +209,7 @@ table tr:nth-child(even){
     <div class="header">
         <h1>Teacher Dashboard</h1>
 
-        <a href="/logout">
+        <a href="{{ url_for('logout') }}">
             <button class="logout-btn">
                 Logout
             </button>
@@ -253,7 +253,7 @@ table tr:nth-child(even){
 
         <h2>Attendance QR</h2>
 
-        <form action="/generate_qr" method="POST">
+        <form action="{{ url_for('generate_qr') }}" method="POST">
             <button type="submit" class="generate-btn">
                 Generate QR
             </button>
@@ -285,7 +285,7 @@ table tr:nth-child(even){
             Opens in Excel or Google Sheets.
         </p>
 
-        <form class="download-form" action="/download-attendance" method="GET">
+        <form class="download-form" action="{{ url_for('download_attendance') }}" method="GET">
 
             <div>
                 <label for="attendance-date">Select Date</label>
