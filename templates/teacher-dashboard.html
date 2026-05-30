@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Teacher Dashboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    background:linear-gradient(135deg,#0f172a,#1e293b,#2563eb);
+    padding:30px;
+    color:white;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+}
+
+/* HEADER */
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:30px;
+}
+
+.logout-btn{
+    padding:12px 20px;
+    border:none;
+    border-radius:12px;
+    background:#ef4444;
+    color:white;
+    cursor:pointer;
+}
+
+/* CARDS */
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+    margin-bottom:30px;
+}
+
+.card{
+    background:rgba(255,255,255,0.08);
+    padding:25px;
+    border-radius:20px;
+    backdrop-filter:blur(15px);
+}
+
+.card h2{
+    color:#cbd5e1;
+    margin-bottom:10px;
+}
+
+.card p{
+    font-size:32px;
+    font-weight:700;
+}
+
+/* QR SECTION */
+
+.qr-section{
+    background:rgba(255,255,255,0.08);
+    padding:30px;
+    border-radius:20px;
+    margin-bottom:30px;
+    backdrop-filter:blur(15px);
+}
+
+.generate-btn{
+    padding:15px 25px;
+    border:none;
+    border-radius:14px;
+    background:linear-gradient(135deg,#3b82f6,#06b6d4);
+    color:white;
+    cursor:pointer;
+    font-size:16px;
+}
+
+.qr-box{
+    text-align:center;
+    margin-top:25px;
+}
+
+.qr-box img{
+    width:250px;
+    background:white;
+    padding:10px;
+    border-radius:15px;
+}
+
+.qr-link{
+    margin-top:15px;
+    word-break:break-all;
+    color:#cbd5e1;
+}
+
+/* TABLE */
+
+.table-section{
+    background:rgba(255,255,255,0.08);
+    padding:30px;
+    border-radius:20px;
+    backdrop-filter:blur(15px);
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+table th,
+table td{
+    padding:15px;
+    text-align:left;
+}
+
+table th{
+    background:rgba(255,255,255,0.1);
+}
+
+table tr:nth-child(even){
+    background:rgba(255,255,255,0.05);
+}
+
+.no-data{
+    text-align:center;
+    padding:20px;
+}
+
+/* DOWNLOAD SECTION */
+
+.download-section{
+    background:rgba(255,255,255,0.08);
+    padding:30px;
+    border-radius:20px;
+    margin-bottom:30px;
+    backdrop-filter:blur(15px);
+}
+
+.download-section h2{
+    margin-bottom:8px;
+}
+
+.download-subtitle{
+    color:#cbd5e1;
+    font-size:14px;
+    margin-bottom:20px;
+}
+
+.download-form{
+    display:flex;
+    flex-wrap:wrap;
+    gap:15px;
+    align-items:flex-end;
+}
+
+.download-form label{
+    display:block;
+    color:#cbd5e1;
+    font-size:14px;
+    margin-bottom:8px;
+}
+
+.download-form input[type="date"]{
+    padding:12px 14px;
+    border:none;
+    border-radius:12px;
+    background:rgba(255,255,255,0.12);
+    color:white;
+    font-size:15px;
+    min-width:180px;
+}
+
+.download-btn{
+    padding:15px 25px;
+    border:none;
+    border-radius:14px;
+    background:linear-gradient(135deg,#10b981,#06b6d4);
+    color:white;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:600;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>Teacher Dashboard</h1>
+
+        <a href="/logout">
+            <button class="logout-btn">
+                Logout
+            </button>
+        </a>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div style="margin-bottom:20px;padding:14px 18px;border-radius:14px;font-size:14px;
+                    {% if category == 'error' %}background:rgba(239,68,68,0.2);color:#fecaca;
+                    {% else %}background:rgba(16,185,129,0.2);color:#bbf7d0;{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="cards">
+
+        <div class="card">
+            <h2>Total Students</h2>
+            <p>{{ total_students }}</p>
+        </div>
+
+        <div class="card">
+            <h2>Today's Attendance</h2>
+            <p>{{ today_attendance }}</p>
+        </div>
+
+        <div class="card">
+            <h2>Attendance Percentage</h2>
+            <p>{{ attendance_percentage }}%</p>
+        </div>
+
+    </div>
+
+    <!-- QR SECTION -->
+
+    <div class="qr-section">
+
+        <h2>Attendance QR</h2>
+
+        <form action="/generate_qr" method="POST">
+            <button type="submit" class="generate-btn">
+                Generate QR
+            </button>
+        </form>
+
+        {% if qr_link %}
+
+        <div class="qr-box">
+
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data={{ qr_link }}">
+
+            <div class="qr-link">
+                QR Valid For 10 Minutes
+            </div>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+    <!-- DOWNLOAD ATTENDANCE -->
+
+    <div class="download-section">
+
+        <h2>Download Attendance Sheet</h2>
+        <p class="download-subtitle">
+            Select a date to download a CSV sheet with all students (Present / Absent).
+            Opens in Excel or Google Sheets.
+        </p>
+
+        <form class="download-form" action="/download-attendance" method="GET">
+
+            <div>
+                <label for="attendance-date">Select Date</label>
+                <input
+                    type="date"
+                    id="attendance-date"
+                    name="date"
+                    value="{{ today_date }}"
+                    required>
+            </div>
+
+            <button type="submit" class="download-btn">
+                Download Sheet
+            </button>
+
+        </form>
+
+    </div>
+
+    <!-- ATTENDANCE TABLE -->
+
+    <div class="table-section">
+
+        <h2>Recent Attendance</h2>
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Roll</th>
+                    <th>Email</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+            {% if records %}
+
+                {% for row in records %}
+
+                <tr>
+                    <td>{{ row['Name'] }}</td>
+                    <td>{{ row['Roll'] }}</td>
+                    <td>{{ row['Email'] }}</td>
+                    <td>{{ row['Time'] }}</td>
+                    <td>{{ row['Status'] }}</td>
+                </tr>
+
+                {% endfor %}
+
+            {% else %}
+
+                <tr>
+                    <td colspan="5" class="no-data">
+                        No attendance records available
+                    </td>
+                </tr>
+
+            {% endif %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>

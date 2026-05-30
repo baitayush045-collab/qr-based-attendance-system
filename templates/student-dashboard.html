@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#0f172a,#1e293b,#2563eb);
+    padding:20px;
+}
+
+.container{
+    width:100%;
+    max-width:500px;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.15);
+    backdrop-filter:blur(18px);
+    padding:38px;
+    border-radius:28px;
+    color:white;
+    text-align:center;
+}
+
+h1{
+    font-size:34px;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    color:#cbd5e1;
+    margin-bottom:20px;
+    font-size:14px;
+}
+
+.info{
+    margin-bottom:25px;
+    font-size:15px;
+    color:#e2e8f0;
+    line-height:1.6;
+}
+
+.scan-btn{
+    width:100%;
+    padding:16px;
+    border:none;
+    border-radius:14px;
+    background:linear-gradient(135deg,#10b981,#06b6d4);
+    color:white;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    margin-bottom:15px;
+}
+
+.status-box{
+    padding:14px 18px;
+    border-radius:14px;
+    margin-bottom:20px;
+    font-size:14px;
+}
+
+.status-success{
+    background:rgba(16,185,129,0.2);
+    border:1px solid rgba(16,185,129,0.4);
+    color:#bbf7d0;
+}
+
+.status-warning{
+    background:rgba(245,158,11,0.2);
+    border:1px solid rgba(245,158,11,0.4);
+    color:#fde68a;
+}
+
+.status-error{
+    background:rgba(239,68,68,0.2);
+    border:1px solid rgba(239,68,68,0.4);
+    color:#fecaca;
+}
+
+.status-present{
+    background:rgba(59,130,246,0.2);
+    border:1px solid rgba(59,130,246,0.4);
+    color:#bfdbfe;
+}
+
+.logout-link{
+    display:inline-block;
+    margin-top:20px;
+    color:#cbd5e1;
+    text-decoration:none;
+    font-size:14px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <h1>Welcome, {{ student_name }}</h1>
+    <p class="subtitle">QR-based attendance system</p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="status-box status-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% if marked_today %}
+        <div class="status-box status-present">
+            Today's attendance is already marked.
+        </div>
+    {% else %}
+        <div class="info">
+            Scan the teacher's QR code to mark attendance automatically.
+        </div>
+    {% endif %}
+
+    <form action="/scan-page">
+        <button type="submit" class="scan-btn">
+            Scan QR Code
+        </button>
+    </form>
+
+    <a href="/logout" class="logout-link">Logout</a>
+
+</div>
+
+</body>
+</html>

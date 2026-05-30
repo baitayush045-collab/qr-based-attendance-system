@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Attendance System</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 20px;
+    background:linear-gradient(135deg,#0f172a,#1e293b,#2563eb);
+    position:relative;
+    overflow-y:auto;
+    overflow-x:hidden;
+}
+
+/* BACKGROUND GLOW */
+
+body::before{
+    content:'';
+    position:absolute;
+    width:350px;
+    height:350px;
+    background:#3b82f6;
+    border-radius:50%;
+    filter:blur(120px);
+    top:-100px;
+    left:-100px;
+    opacity:0.5;
+}
+
+body::after{
+    content:'';
+    position:absolute;
+    width:300px;
+    height:300px;
+    background:#06b6d4;
+    border-radius:50%;
+    filter:blur(120px);
+    bottom:-100px;
+    right:-100px;
+    opacity:0.5;
+}
+
+/* MAIN CONTAINER */
+
+.container{
+    width:100%;
+    max-width:420px;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.15);
+    backdrop-filter:blur(18px);
+    border-radius:28px;
+    overflow:hidden;
+    box-shadow:0 20px 45px rgba(0,0,0,0.4);
+    position:relative;
+    z-index:10;
+    transition:0.4s ease;
+}
+
+.container:hover{
+    transform:translateY(-6px);
+    box-shadow:0 30px 60px rgba(0,0,0,0.5);
+}
+
+/* HEADER */
+
+.header{
+    text-align:center;
+    padding:22px 15px;
+    background:rgba(255,255,255,0.06);
+    border-bottom:1px solid rgba(255,255,255,0.15);
+}
+
+.header h1{
+    color:white;
+    font-size:30px;
+    font-weight:700;
+    letter-spacing:0.5px;
+}
+
+/* CONTENT */
+
+.content{
+    padding:28px;
+}
+
+/* TABS */
+
+.tabs{
+    display:flex;
+    gap:10px;
+    margin-bottom:25px;
+}
+
+.tab-btn{
+    flex:1;
+    border:none;
+    padding:13px;
+    border-radius:14px;
+    background:rgba(255,255,255,0.12);
+    color:white;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s ease;
+}
+
+.tab-btn:hover{
+    background:rgba(255,255,255,0.2);
+    transform:translateY(-2px);
+}
+
+.tab-btn.active{
+    background:linear-gradient(135deg,#3b82f6,#06b6d4);
+    box-shadow:0 10px 20px rgba(59,130,246,0.35);
+}
+
+/* LOGIN BOX */
+
+.login-box{
+    display:none;
+    animation:fade 0.4s ease;
+}
+
+.login-box.active{
+    display:block;
+}
+
+@keyframes fade{
+    from{
+        opacity:0;
+        transform:translateY(10px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* TITLES */
+
+h2{
+    color:white;
+    margin-bottom:8px;
+    font-size:28px;
+}
+
+.subtitle{
+    color:#cbd5e1;
+    margin-bottom:22px;
+    font-size:14px;
+}
+
+/* INPUTS */
+
+.input-box{
+    margin-bottom:18px;
+}
+
+.input-box label{
+    display:block;
+    color:white;
+    margin-bottom:8px;
+    font-size:14px;
+}
+
+.input-box input{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:14px;
+    background:rgba(255,255,255,0.12);
+    color:white;
+    outline:none;
+    font-size:15px;
+    transition:0.3s ease;
+}
+
+.input-box input::placeholder{
+    color:#cbd5e1;
+}
+
+.input-box input:hover{
+    background:rgba(255,255,255,0.18);
+}
+
+.input-box input:focus{
+    background:rgba(255,255,255,0.18);
+    box-shadow:0 0 0 3px rgba(59,130,246,0.35);
+    transform:scale(1.01);
+}
+
+/* BUTTON */
+
+.login-btn{
+    width:100%;
+    border:none;
+    padding:15px;
+    border-radius:14px;
+    background:linear-gradient(135deg,#3b82f6,#06b6d4);
+    color:white;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s ease;
+    margin-top:8px;
+    box-shadow:0 10px 25px rgba(59,130,246,0.35);
+}
+
+.login-btn:hover{
+    transform:translateY(-3px) scale(1.02);
+    box-shadow:0 15px 30px rgba(59,130,246,0.45);
+}
+
+.login-btn:active{
+    transform:translateY(0);
+}
+
+/* FOOTER */
+
+.footer{
+    margin-top:22px;
+    text-align:center;
+    color:#cbd5e1;
+    font-size:13px;
+}
+
+/* MOBILE */
+
+@media(max-width:500px){
+
+    .content{
+        padding:22px;
+    }
+
+    .header h1{
+        font-size:25px;
+    }
+
+    h2{
+        font-size:24px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <div class="header">
+        <h1>Smart Attendance System</h1>
+    </div>
+
+    <!-- CONTENT -->
+
+    <div class="content">
+
+        <!-- TABS -->
+
+        <div class="tabs">
+
+            <button type="button"
+                    class="tab-btn active"
+                    onclick="showLogin('student')">
+                Student
+            </button>
+
+            <button type="button"
+                    class="tab-btn"
+                    onclick="showLogin('teacher')">
+                Teacher
+            </button>
+
+        </div>
+
+        <!-- STUDENT LOGIN -->
+
+        <div class="login-box active" id="student">
+
+            <h2>Student Login</h2>
+
+            <p class="subtitle">
+                Access your student dashboard
+            </p>
+
+            <form action="/student_login" method="POST">
+
+                <div class="input-box">
+                    <label>Student Email</label>
+
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="Enter student email"
+                        required>
+                </div>
+
+                <div class="input-box">
+                    <label>Password</label>
+
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Enter password"
+                        required>
+                </div>
+
+                <button type="submit" class="login-btn">
+                    Student Login
+                </button>
+
+            </form>
+
+        </div>
+
+        <!-- TEACHER LOGIN -->
+
+        <div class="login-box" id="teacher">
+
+            <h2>Teacher Login</h2>
+
+            <p class="subtitle">
+                Access your teacher dashboard
+            </p>
+
+            <form action="/teacher_login" method="POST">
+
+                <div class="input-box">
+                    <label>Teacher Email</label>
+
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="Enter teacher email"
+                        required>
+                </div>
+
+                <div class="input-box">
+                    <label>Password</label>
+
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Enter password"
+                        required>
+                </div>
+
+                <button type="submit" class="login-btn">
+                    Teacher Login
+                </button>
+
+            </form>
+
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div style="margin-top:15px;padding:12px;border-radius:12px;font-size:14px;
+                        {% if category == 'error' %}background:rgba(239,68,68,0.2);color:#fecaca;
+                        {% else %}background:rgba(245,158,11,0.2);color:#fde68a;{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- FOOTER -->
+
+        <div class="footer">
+            © 2026 Smart Attendance System
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+function showLogin(type){
+
+    let student = document.getElementById("student");
+    let teacher = document.getElementById("teacher");
+
+    let buttons = document.querySelectorAll(".tab-btn");
+
+    buttons.forEach(btn=>{
+        btn.classList.remove("active");
+    });
+
+    if(type==="student"){
+
+        student.classList.add("active");
+        teacher.classList.remove("active");
+
+        buttons[0].classList.add("active");
+    }
+    else{
+
+        teacher.classList.add("active");
+        student.classList.remove("active");
+
+        buttons[1].classList.add("active");
+    }
+}
+
+</script>
+
+</body>
+</html>
+

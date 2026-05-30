@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scan QR</title>
+
+    <script src="https://unpkg.com/html5-qrcode"></script>
+
+    <style>
+        body{
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+            background:#0f172a;
+            color:white;
+            font-family:Poppins;
+        }
+
+        #reader{
+            width:350px;
+            background:white;
+            padding:10px;
+            border-radius:12px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div>
+    <h2>Scan QR to Mark Attendance</h2>
+    <div id="reader"></div>
+</div>
+
+<script>
+
+let scanned = false;
+
+function onScanSuccess(decodedText) {
+    if (scanned) return;
+    scanned = true;
+    scanner.clear().then(function () {
+        window.location.href = decodedText;
+    }).catch(function () {
+        window.location.href = decodedText;
+    });
+}
+
+let scanner = new Html5QrcodeScanner("reader", {
+    fps: 10,
+    qrbox: 250
+});
+
+scanner.render(onScanSuccess, function () {});
+
+</script>
+
+</body>
+</html>
